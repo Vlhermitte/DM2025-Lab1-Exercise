@@ -1,4 +1,5 @@
 import nltk
+import numpy as np
 
 """
 Helper functions for data mining lab session 2018 Fall Semester
@@ -36,3 +37,13 @@ def tokenize_text(text, remove_stopwords=False):
             # filters here
             tokens.append(word)
     return tokens
+
+def scale_and_clip_dense(A, scale='log1p', clip_quantile=0.995):
+    A = A.astype(float, copy=False)
+    if scale == 'log1p':
+        A = np.log1p(A)
+    vmax = None
+    if clip_quantile and 0 < clip_quantile <= 1:
+        vmax = np.quantile(A, clip_quantile)
+        if vmax <= 0: vmax = None
+    return A, vmax
